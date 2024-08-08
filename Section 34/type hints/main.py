@@ -16,10 +16,3 @@ if police_check(12):
     print("You may pass")
 else:
     print("Pay a fine.")
-
-
-
-
-
-
-
