@@ -1,48 +1,30 @@
 import os
 from twilio.rest import Client
+from dotenv import load_dotenv
 
-# Using a .env file to retrieve the phone numbers and tokens.
+# Load environment variables from .env file
+load_dotenv()
 
 class NotificationManager:
-
     def __init__(self):
-        self.client = Client(os.environ['TWILIO_SID'], os.environ["TWILIO_AUTH_TOKEN"])
+        self.client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
+        self.twilio_phone = os.getenv("TWILIO_PHONE_NUMBER")
+        self.my_phone = os.getenv("MY_PHONE_NUMBER")
+        self.whatsapp_phone = f"whatsapp:{self.my_phone}"
+        self.sms_phone = self.my_phone
 
     def send_sms(self, message_body):
-        """
-        Sends an SMS message through the Twilio API.
-        This function takes a message body as input and uses the Twilio API to send an SMS from
-        a predefined virtual number (provided by Twilio) to your own "verified" number.
-        It logs the unique SID (Session ID) of the message, which can be used to
-        verify that the message was sent successfully.
-
-        Parameters:
-        message_body (str): The text content of the SMS message to be sent.
-
-        Returns:
-        None
-
-        Notes:
-        - Ensure that `TWILIO_VIRTUAL_NUMBER` and `TWILIO_VERIFIED_NUMBER` are correctly set up in
-        your environment (.env file) and correspond with numbers registered and verified in your
-        Twilio account.
-        - The Twilio client (`self.client`) should be initialized and authenticated with your
-        Twilio account credentials prior to using this function when the Notification Manager gets
-        initialized.
-        """
         message = self.client.messages.create(
-            from_=os.environ["TWILIO_VIRTUAL_NUMBER"],
             body=message_body,
-            to=os.environ["TWILIO_VIRTUAL_NUMBER"]
+            from_=self.twilio_phone,
+            to=self.sms_phone
         )
-        # Prints if successfully sent.
-        print(message.sid)
+        print(f"SMS sent: {message.sid}")
 
-    # https://console.twilio.com/us1/develop/sms/try-it-out/whatsapp-learn
     def send_whatsapp(self, message_body):
         message = self.client.messages.create(
-            from_=f'whatsapp:{os.environ["TWILIO_WHATSAPP_NUMBER"]}',
             body=message_body,
-            to=f'whatsapp:{os.environ["TWILIO_VERIFIED_NUMBER"]}'
+            from_=f"whatsapp:{self.twilio_phone}",
+            to=self.whatsapp_phone
         )
-        print(message.sid)
+        print(f"WhatsApp message sent: {message.sid}")
