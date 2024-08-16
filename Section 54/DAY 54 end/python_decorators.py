@@ -1,26 +1,34 @@
+import time
+
 def add(n1, n2):
+    """Add two numbers."""
     return n1 + n2
 
 def subtract(n1, n2):
+    """Subtract the second number from the first number."""
     return n1 - n2
 
 def multiply(n1, n2):
+    """Multiply two numbers."""
     return n1 * n2
 
 def divide(n1, n2):
+    """Divide the first number by the second number, with error handling for division by zero."""
+    if n2 == 0:
+        raise ValueError("Cannot divide by zero.")
     return n1 / n2
 
-##Functions are first-class objects, can be passed around as arguments e.g. int/string/float etc.
-
 def calculate(calc_function, n1, n2):
+    """Perform a calculation using the provided function and two numbers."""
     return calc_function(n1, n2)
 
+# Testing the calculation functions
 result = calculate(add, 2, 3)
-print(result)
+print(f"Result of addition: {result}")
 
-##Functions can be nested in other functions
-
+# Function nesting example
 def outer_function():
+    """Demonstrates nested functions."""
     print("I'm outer")
 
     def nested_function():
@@ -30,8 +38,9 @@ def outer_function():
 
 outer_function()
 
-## Functions can be returned from other functions
-def outer_function():
+# Function returning example
+def outer_function_with_return():
+    """Returns a nested function."""
     print("I'm outer")
 
     def nested_function():
@@ -39,33 +48,34 @@ def outer_function():
 
     return nested_function
 
-inner_function = outer_function()
-inner_function
+# Obtain and call the inner function
+inner_function = outer_function_with_return()
+inner_function()
 
-
-## Simple Python Decorator Functions
-import time
-
+# Simple Python Decorator Function
 def delay_decorator(function):
-    def wrapper_function():
+    """Decorator to add a delay before executing the decorated function."""
+    def wrapper_function(*args, **kwargs):
         time.sleep(2)
-        #Do something before
-        function()
-        function()
-        #Do something after
+        # Do something before
+        function(*args, **kwargs)
+        # Do something after
     return wrapper_function
 
 @delay_decorator
 def say_hello():
+    """Print a hello message."""
     print("Hello")
 
-#With the @ syntactic sugar
 @delay_decorator
 def say_bye():
+    """Print a goodbye message."""
     print("Bye")
 
-#Without the @ syntactic sugar
 def say_greeting():
+    """Print a greeting message."""
     print("How are you?")
-decorated_function = delay_decorator(say_greeting)
-decorated_function()
+
+# Applying the decorator manually
+decorated_say_greeting = delay_decorator(say_greeting)
+decorated_say_greeting()
